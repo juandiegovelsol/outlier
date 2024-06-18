@@ -1,0 +1,136 @@
+// Inicializa el nivel y las solicitudes matemáticas.
+function init() {
+  level = 0;
+  math_requests = []; // Corregido el nombre de la variable
+
+  // Define los arreglos a, b y c.
+  var a = [2, 3, 4, 6, 8];
+  var b = [5, 6, 10, 16, 20];
+  var c = [7, 8, 14, 16, 28];
+
+  // Agrega las solicitudes matemáticas a la lista.
+  math_requests.push({
+    eq: "2*a = b",
+    selections: ["a", "b"],
+    answers: [a, b],
+  });
+  math_requests.push({
+    eq: "2*a = b",
+    selections: ["a", "b"],
+    answers: [a, b],
+  });
+  math_requests.push({
+    eq: "2*a = b",
+    selections: ["a", "b"],
+    answers: [a, b],
+  });
+  math_requests.push({
+    eq: "2*a = b",
+    selections: ["a", "b"],
+    answers: [a, b],
+  });
+  math_requests.push({
+    eq: "2*a = b",
+    selections: ["a", "b"],
+    answers: [a, b],
+  });
+
+  // Baraja las solicitudes matemáticas.
+  shuffle(math_requests);
+
+  // Renderiza el primer nivel.
+  render(level);
+}
+
+// Función para barajar un array.
+function shuffle(array) {
+  var currentindex = array.length,
+    randomindex;
+
+  // Mientras queden elementos a barajar...
+  while (0 !== currentindex) {
+    // Selecciona un elemento restante...
+    randomindex = Math.floor(Math.random() * currentindex);
+    currentindex--;
+
+    // E intercámbialo con el elemento actual.
+    [array[currentindex], array[randomindex]] = [
+      array[randomindex],
+      array[currentindex],
+    ];
+  }
+
+  return array;
+}
+
+// Renderiza el contenido basado en el índice proporcionado.
+function render(index) {
+  var current = math_requests[index];
+  var html =
+    '<div class="grid"><div class="col-sm-4 txt-eq">' +
+    current.eq +
+    '</div><table class="table table-sm"><tbody>';
+  var j = 0;
+
+  for (var i = 0; i < current.selections.length; i++) {
+    var style =
+      'style="padding: 8px; background: #215ab7; color: white; border-radius: 20px; text-align: center; cursor: pointer; margin: 5px; width: ' +
+      100 / current.selections.length +
+      '%;"';
+    if (current.selections[i] === "answer") {
+      var selected_index = Math.floor(
+        Math.random() * current.answers[i].length
+      );
+      html +=
+        "<td " +
+        style +
+        " onclick=\"changevalue('" +
+        current.selections[i] +
+        "', " +
+        selected_index +
+        "," +
+        index +
+        ')">' +
+        current.answers[i][selected_index] +
+        "</td>";
+    } else {
+      html +=
+        "<td " +
+        style +
+        " onclick=\"changevalue('" +
+        current.selections[i] +
+        "'," +
+        i +
+        "," +
+        index +
+        ')">' +
+        current.answers[i][i] +
+        "</td>";
+    }
+    j++;
+  }
+
+  html += "</tbody></table></div>";
+  document.getElementById("game-container").innerHTML = html;
+}
+
+// Maneja el cambio de valor cuando el usuario selecciona una respuesta.
+function changevalue(selection, value, index) {
+  if (selection === "answer") {
+    if (math_requests[index].eq === "2*a = b") {
+      // Corrige la comparación lógica
+      if (
+        2 * math_requests[index].answers[0][value] ===
+        math_requests[index].answers[1][value]
+      ) {
+        level++;
+        render(level);
+      } else {
+        alert("please try again.");
+      }
+    }
+  }
+}
+
+// Ejecuta la función init para iniciar el juego cuando el documento esté listo.
+document.addEventListener("DOMContentLoaded", init);

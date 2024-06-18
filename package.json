@@ -1,0 +1,11 @@
+{
+  "name": "outlier",
+  "version": "1.0.0",
+  "description": "this folder has all the Tasks made for outlier, each stored in a different folder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juan Diego Velasco",
+  "license": "ISC"
+}

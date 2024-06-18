@@ -1,0 +1,271 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Person's Network</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+      .node {
+        fill: #1f77b4;
+      }
+      .label {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="600" height="400"></svg>
+    <script>
+      const svg = d3.select("svg");
+      const width = svg.attr("width");
+      const height = svg.attr("height");
+
+      const data = {
+        nodes: [
+          { id: "Alice" },
+          { id: "Bob" },
+          { id: "Charlie" },
+          { id: "Diana" },
+        ],
+        links: [
+          { source: "Alice", target: "Bob" },
+          { source: "Alice", target: "Charlie" },
+          { source: "Bob", target: "Diana" },
+          { source: "Diana", target: "Charlie" },
+        ],
+      };
+
+      const simulation = d3
+        .forceSimulation(data.nodes)
+        .force(
+          "link",
+          d3
+            .forceLink(data.links)
+            .id((d) => d.id)
+            .distance(100)
+        )
+        .force("charge", d3.forceManyBody().strength(-400))
+        .force("center", d3.forceCenter(width, height));
+
+      const link = svg
+        .append("g")
+        .selectAll("line")
+        .data(data.links)
+        .enter()
+        .append("line")
+        .attr("stroke", "#999")
+        .attr("stroke-width", 1.5);
+
+      const node = svg
+        .append("g")
+        .selectAll("circle")
+        .data(data.nodes)
+        .enter()
+        .append("circle")
+        .attr("r", 8)
+        .attr("class", "node");
+
+      const label = svg
+        .append("g")
+        .selectAll("text")
+        .data(data.nodes)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .text((d) => d.id);
+
+      function ticked() {
+        link
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y);
+
+        node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+
+        label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+      }
+    </script>
+  </body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Person's Network</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+      .node {
+        fill: #1f77b4;
+      }
+      .label {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="600" height="400"></svg>
+    <div>
+      <input id="new-person" type="text" placeholder="New person" />
+      <button id="add-person">Add Person</button>
+    </div>
+    <div>
+      <select id="source-node"></select>
+      <select id="target-node"></select>
+      <button id="add-relation">Add Relation</button>
+    </div>
+    <script>
+      const svg = d3.select("svg");
+      const width = svg.attr("width");
+      const height = svg.attr("height");
+
+      const data = {
+        nodes: [
+          { id: "Alice" },
+          { id: "Bob" },
+          { id: "Charlie" },
+          { id: "Diana" },
+        ],
+        links: [
+          { source: "Alice", target: "Bob" },
+          { source: "Alice", target: "Charlie" },
+          { source: "Bob", target: "Diana" },
+          { source: "Diana", target: "Charlie" },
+        ],
+      };
+
+      const simulation = d3
+        .forceSimulation(data.nodes)
+        .force(
+          "link",
+          d3
+            .forceLink(data.links)
+            .id((d) => d.id)
+            .distance(100)
+        )
+        .force("charge", d3.forceManyBody().strength(-400))
+        .force("center", d3.forceCenter(width / 2, height / 2));
+
+      const link = svg
+        .append("g")
+        .selectAll("line")
+        .data(data.links)
+        .enter()
+        .append("line")
+        .attr("stroke", "#999")
+        .attr("stroke-width", 1.5);
+
+      const node = svg
+        .append("g")
+        .selectAll("circle")
+        .data(data.nodes)
+        .enter()
+        .append("circle")
+        .attr("r", 8)
+        .attr("class", "node");
+
+      const label = svg
+        .append("g")
+        .selectAll("text")
+        .data(data.nodes)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .text((d) => d.id);
+
+      function ticked() {
+        link
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y);
+
+        node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+
+        label.attr("x", (d) => d.x + 10).attr("y", (d) => d.y + 5);
+      }
+
+      simulation.on("tick", ticked);
+
+      const newNodeInput = document.getElementById("new-person");
+      const addPersonButton = document.getElementById("add-person");
+      const sourceNodeSelect = document.getElementById("source-node");
+      const targetNodeSelect = document.getElementById("target-node");
+      const addRelationButton = document.getElementById("add-relation");
+
+      function updateNodeSelects() {
+        sourceNodeSelect.innerHTML = "";
+        targetNodeSelect.innerHTML = "";
+        data.nodes.forEach((node) => {
+          const option = document.createElement("option");
+          option.value = node.id;
+          option.text = node.id;
+          sourceNodeSelect.appendChild(option.cloneNode(true));
+          targetNodeSelect.appendChild(option.cloneNode(true));
+        });
+      }
+
+      updateNodeSelects();
+
+      addPersonButton.addEventListener("click", () => {
+        const newNode = { id: newNodeInput.value };
+        data.nodes.push(newNode);
+        simulation.nodes(data.nodes);
+        simulation.alpha(1).restart();
+        svg
+          .selectAll("circle")
+          .data(data.nodes)
+          .enter()
+          .append("circle")
+          .attr("r", 8)
+          .attr("class", "node");
+        svg
+          .selectAll("text")
+          .data(data.nodes)
+          .enter()
+          .append("text")
+          .attr("class", "label")
+          .text((d) => d.id);
+        updateNodeSelects();
+        newNodeInput.value = "";
+      });
+
+      addRelationButton.addEventListener("click", () => {
+        const sourceNodeId = sourceNodeSelect.value;
+        const targetNodeId = targetNodeSelect.value;
+        if (sourceNodeId === targetNodeId) {
+          alert("Cannot add relation to self");
+          return;
+        }
+        if (
+          data.links.some(
+            (link) =>
+              (link.source.id === sourceNodeId &&
+                link.target.id === targetNodeId) ||
+              (link.source.id === targetNodeId &&
+                link.target.id === sourceNodeId)
+          )
+        ) {
+          alert("Relation already exists");
+          return;
+        }
+        const newLink = { source: sourceNodeId, target: targetNodeId };
+        data.links.push(newLink);
+        simulation.force("link").links(data.links);
+        simulation.alpha(1).restart();
+        svg
+          .selectAll("line")
+          .data(data.links)
+          .enter()
+          .append("line")
+          .attr("stroke", "#999")
+          .attr("stroke-width", 1.5);
+      });
+    </script>
+  </body>
+</html> -->

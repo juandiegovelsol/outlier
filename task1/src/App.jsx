@@ -1,34 +1,38 @@
 import "./App.css";
 
 function App() {
-  const fetchData = async (url) => {
-    try {
-      /*  const response = await fetch(url);
-    const data = await response.json(); */
-      const data = url; // Simulating data fetching
-      return data;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  const fetchData = async () => {
+    const data = [
+      { name: "John", grades: [3, 3, 3, 3, 4] },
+      { name: "Jane", grades: [3, 3, 3, 3, 2] },
+      { name: "Peter", grades: [3, 3, 3, 3, 5] },
+      { name: "Jonas", grades: [3, 3, 3, 3, 0] },
+    ];
 
-  const tablePopulation = async (data) => {
-    const table = document.getElementById("data-table");
+    let tableBody = document.getElementById("data-table-body");
+    if (!tableBody) {
+      tableBody = document.createElement("tbody");
+      tableBody.id = "data-table-body";
+      document.getElementById("data-table").appendChild(tableBody);
+    }
+    tableBody.innerHTML = ""; // clear the table body
+
     data.forEach((item) => {
-      const { name, grades } = item;
-      const row = table.insertRow();
+      const { name } = item;
+      const { grades } = item;
+      const row = tableBody.insertRow();
       const cellName = row.insertCell(0);
       const cellAverage = row.insertCell(1);
       const cellPassed = row.insertCell(2);
       let sum = 0;
       cellName.innerHTML = name;
-      const cellGrades = row.insertCell(3);
-      cellGrades.innerHTML = grades.join(", ");
-      grades.forEach((grade) => {
-        sum += grade;
+      grades.forEach((grade, index) => {
+        const gradeCell = row.insertCell(index + 3);
+        gradeCell.innerHTML = grade;
+        sum = sum + grade;
       });
       const average = sum / grades.length;
-      cellAverage.innerHTML = average.toFixed(2);
+      cellAverage.innerHTML = average;
       if (average >= 3) {
         cellPassed.innerHTML = "Passed";
         cellPassed.style.backgroundColor = "green";
@@ -39,80 +43,61 @@ function App() {
     });
   };
 
-  const main = async () => {
-    const data = [
-      { name: "juan D", grades: [3, 3, 3, 3, 4] },
-      { name: "juan Di", grades: [3, 3, 3, 3, 2] },
-      { name: "juan Die", grades: [3, 3, 3, 3, 5] },
-      { name: "juan Dieg", grades: [3, 3, 3, 3, 0] },
-    ];
-    const fetchData1 = await fetchData(data);
-    if (fetchData1) {
-      tablePopulation(fetchData1);
+  const removeTable = () => {
+    const table = document.getElementById("data-table");
+    const tableBody = document.getElementById("data-table-body");
+    if (tableBody) {
+      table.removeChild(tableBody);
     }
   };
 
-  /* const fetchData = (data) => {
-    try {
-      return data;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const tablePopulation = (data) => {
-    try {
-      const table = document.getElementById("data-table");
-      data.forEach((item) => {
-        const row = table.insertRow();
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        cell1.innerHTML = item.name;
-        cell2.innerHTML = item.value;
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const updateTable = (index, name, value) => {
-    try {
-      const table = document.getElementById("data-table");
-      const rows = table.rows;
-      if (index < rows.length) {
-        rows[index].cells[0].innerHTML = name;
-        rows[index].cells[1].innerHTML = value;
-      } else {
-        const row = table.insertRow();
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        cell1.innerHTML = name;
-        cell2.innerHTML = value;
+  const updateTable = (name, grades) => {
+    const tableBody = document.getElementById("data-table-body");
+    const rows = tableBody.children;
+    for (const row of rows) {
+      const cells = row.children;
+      if (cells[0].innerHTML === name) {
+        tableBody.removeChild(row);
+        const newRow = document.createElement("tr");
+        const cellName = newRow.insertCell(0);
+        const cellAverage = newRow.insertCell(1);
+        const cellPassed = newRow.insertCell(2);
+        let sum = 0;
+        cellName.innerHTML = name;
+        grades.forEach((grade, index) => {
+          const gradeCell = newRow.insertCell(index + 3);
+          gradeCell.innerHTML = grade;
+          sum = sum + grade;
+        });
+        const average = sum / grades.length;
+        cellAverage.innerHTML = average;
+        if (average >= 3) {
+          cellPassed.innerHTML = "Passed";
+          cellPassed.style.backgroundColor = "green";
+        } else {
+          cellPassed.innerHTML = "Not Passed";
+          cellPassed.style.backgroundColor = "red";
+        }
+        tableBody.appendChild(newRow);
       }
-    } catch (error) {
-      console.error("Error:", error);
     }
   };
-
-  const main = async () => {
-    const data = [
-      { name: "juan", value: 10 },
-      { name: "juan", value: 11 },
-      { name: "juan", value: 12 },
-      { name: "juan", value: 13 },
-    ];
-    const fetchData1 = fetchData(data);
-    if (fetchData1) {
-      tablePopulation(fetchData1);
-      updateTable(0, "Updated Name", "Updated Value");
-    }
-  }; */
 
   return (
     <>
       <div>
-        <table id="data-table"></table>
-        <button onClick={main}>Show table</button>
+        <table id="data-table">
+          <tbody id="data-table-body"></tbody>
+        </table>
+        <button onClick={fetchData}>Show table</button>
+        <button onClick={removeTable}>Remove table</button>
+        <button
+          onClick={() => {
+            updateTable("John", [3, 3, 3, 3, 1]);
+          }}
+        >
+          Update table
+        </button>
       </div>
     </>
   );
